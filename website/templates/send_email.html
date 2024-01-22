@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<!-- Email Form Section -->
+<section class="site-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-7 mb-5">
+        <h2 class="text-black text-center">Send an Email</h2>
+
+        {% if messages %}
+          <div class="alert alert-success" role="alert">
+            {{ messages }}
+          </div>
+        {% endif %}
+
+        <form method="post">
+          {% csrf_token %}
+
+          <!-- Email Recipient -->
+          <div class="form-group">
+            <label for="email-recipient">Recipient's Email</label>
+            <input value="{{ email }}" type="email" class="form-control" id="email-recipient" name="email_recipient" required readonly>
+          </div>
+
+          <!-- Email Subject -->
+          <div class="form-group">
+            <label for="email-subject">Subject</label>
+            <input type="text" class="form-control" id="email-subject" name="email_subject" required>
+          </div>
+
+          <!-- Email Message -->
+          <div class="form-group">
+            <label for="email-message">Message</label>
+            <textarea class="form-control" id="email-message" name="email_message" rows="5" required></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Send Email">
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
