@@ -25,7 +25,7 @@ def home(request):
 		role = ''
 		create_record = False
 		if request is not None  and request.user is not None and request.user.id is not None:
-			role = UserRole.objects.get(id=request.user.id)
+			role = UserRole.objects.get(user=request.user)
 			create_record = role.role == 'Manager'
 		print(role)
 		return render(request, 'home.html', {'records':records, 'role': role, 'show_new': create_record})
