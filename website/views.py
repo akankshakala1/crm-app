@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm, AddRecordForm
-from .models import Record
+from .models import Record, UserRole
 from django.core.mail import send_mail
 
 
@@ -22,7 +22,13 @@ def home(request):
 			messages.success(request, "There Was An Error Logging In, Please Try Again...")
 			return redirect('home')
 	else:
-		return render(request, 'home.html', {'records':records})
+		role = ''
+		create_record = False
+		if request is not None  and request.user is not None and request.user.id is not None:
+			role = UserRole.objects.get(id=request.user.id)
+			create_record = role.role == 'Manager'
+		print(role)
+		return render(request, 'home.html', {'records':records, 'role': role, 'show_new': create_record})
 
 
 
@@ -36,8 +42,13 @@ def register_user(request):
 	if request.method == 'POST':
 		form = SignUpForm(request.POST)
 		if form.is_valid():
-			form.save()
+			user = form.save(commit=False)  # Don't save the user yet
+			user.save()  # Save the user
 			# Authenticate and login
+			# Handle role assignment
+			role = form.cleaned_data.get('role')  # Get the role from the form
+			UserRole.objects.create(user=user, role=role)  # Create UserRole instance
+
 			username = form.cleaned_data['username']
 			password = form.cleaned_data['password1']
 			user = authenticate(username=username, password=password)
