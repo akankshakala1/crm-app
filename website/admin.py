@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Record, UserRole
+from .models import Record
 
 admin.site.register(Record)
-admin.site.register(UserRole)
 
